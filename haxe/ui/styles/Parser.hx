@@ -107,9 +107,13 @@ class Parser {
         combinedCSSMediaRegex.map(source, function(e) {
             var selector = "";
             if (e.matched(2) == null) {
-                selector = StringTools.trim(e.matched(5).split("\r\n").join("\n"));
+                var m5 = e.matched(5);
+                if (m5 == null) return null;
+                selector = StringTools.trim(m5.split("\r\n").join("\n"));
             } else {
-                selector = StringTools.trim(e.matched(2).split("\r\n").join("\n"));
+                var m2 = e.matched(2);
+                if (m2 == null) return null;
+                selector = StringTools.trim(m2.split("\r\n").join("\n"));
             }
 
             // Never have more than a single line break in a row
@@ -122,12 +126,16 @@ class Parser {
                 var n2 = selector.lastIndexOf(")");
                 var mediaQuery = selector.substring(n1 + 1, n2);
 
-                var mediaStyleSheet = new Parser().parse(e.matched(3) + '\n}');
+                var e3 = e.matched(3);
+                if (e3 == null) return null;
+                var mediaStyleSheet = new Parser().parse(e3 + '\n}');
                 var mq = new MediaQuery(parseDirectives(mediaQuery), mediaStyleSheet);
                 styleSheet.addMediaQuery(mq);
             } else {
                 //we have standard css
-                var directives = parseDirectives(e.matched(6));
+                var e6 = e.matched(6);
+                if (e6 == null) return null;
+                var directives = parseDirectives(e6);
                 var selectors = selector.split(",");
                 for (s in selectors) {
                     s = StringTools.trim(s);
