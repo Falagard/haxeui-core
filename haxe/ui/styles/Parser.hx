@@ -44,9 +44,14 @@ class Parser {
                 if (n2 != source.length - 1) {
                     var key = source.substring(n1 + 1, n2);
                     var value = ThemeManager.instance.currentThemeVars.get(key);
-                    if (value != null) {
+                    #if debug
+                    trace("CSS Var substitution: key=" + key + ", value=" + value);
+                    #end
+                    if (value != null && (value : Dynamic) != null) {
                         var before = source.substring(0, n1);
                         var after = source.substring(n2);
+                        if (before == null) before = "";
+                        if (after == null) after = "";
                         source = before + value + after;
                         n2 = n1 + value.length;
                     } else {
