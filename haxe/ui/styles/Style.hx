@@ -209,6 +209,7 @@ class Style {
     @:optional public var customDirectives:Map<String, Directive> = null;
 
     public function mergeDirectives(map:Map<String, Directive>) {
+        if (map == null) return;
         for (key in map.keys()) {
             var v = map.get(key);
             if ((v is DirectiveExtension)) {
