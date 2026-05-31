@@ -135,6 +135,11 @@ private class VerticalScrollLayout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
+        // Bypassing super.repositionChildren() (DefaultLayout) to manually position sub-components.
+        // This is crucial because DefaultLayout centers the thumb horizontally, calculating non-integer
+        // coordinates (e.g. 1.5px). When we subsequently rounded the coordinate to 2.0px using Math.fround(),
+        // it triggered a position invalidation. In the next frame, DefaultLayout positioned it back to 1.5px,
+        // causing an infinite invalidation/layout loop that locks up the UI thread on HashLink.
         var deinc:Button = component.findComponent("scroll-deinc-button");
         var inc:Button = component.findComponent("scroll-inc-button");
         var thumb:Button = component.findComponent("scroll-thumb-button");
