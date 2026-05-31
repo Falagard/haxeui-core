@@ -733,12 +733,12 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
      public function resizeComponent(w:Null<Float>, h:Null<Float>) {
          var invalidate:Bool = false;
  
-         if (w != null && _componentWidth != w) {
+         if (w != null && (_componentWidth == null || Math.abs(_componentWidth - w) > 1.0)) {
              _componentWidth = w;
              invalidate = true;
          }
  
-         if (h != null && _componentHeight != h) {
+         if (h != null && (_componentHeight == null || Math.abs(_componentHeight - h) > 1.0)) {
              _componentHeight = h;
              invalidate = true;
          }

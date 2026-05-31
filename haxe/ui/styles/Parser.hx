@@ -27,6 +27,9 @@ class Parser {
     }
 
     public function parse(source:String):StyleSheet {
+        if (source == null) {
+            return new StyleSheet();
+        }
         source = cssCommentsRegex.replace(source, "");
         
         if (source.indexOf("$") != -1) {

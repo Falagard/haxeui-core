@@ -124,8 +124,10 @@ class StyleSheet {
         var f = new StyleSheet();
         for (i in ss.imports) {
             var importCss = ToolkitAssets.instance.getText(i.url);
-            var importStyleSheet = new Parser().parse(importCss);
-            f.merge(importStyleSheet);
+            if (importCss != null) {
+                var importStyleSheet = new Parser().parse(importCss);
+                f.merge(importStyleSheet);
+            }
         }
 
         f.merge(ss);

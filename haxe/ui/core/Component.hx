@@ -2094,13 +2094,13 @@ class Component extends ComponentImpl
         if (autoWidth == true || autoHeight == true) {
             var s:Size = layout.calcAutoSize();
             if (autoWidth == true) {
-                if (s.width != _componentWidth) {
+                if (_componentWidth == null || Math.abs(s.width - _componentWidth) > 1.0) {
                     _componentWidth = s.width;
                     invalidate = true;
                 }
             }
             if (autoHeight == true) {
-                if (s.height != _componentHeight) {
+                if (_componentHeight == null || Math.abs(s.height - _componentHeight) > 1.0) {
                     _componentHeight = s.height;
                     invalidate = true;
                 }

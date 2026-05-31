@@ -103,7 +103,9 @@ private class HorizontalScrollLayout extends DefaultLayout {
         var thumb:Button = component.findComponent("scroll-thumb-button");
         if (thumb != null) {
             if (scroll.min == scroll.max) {
-                thumb.hide();
+                if (@:privateAccess thumb._hidden == false) {
+                    thumb.hide();
+                }
             } else {
                 var m:Float = scroll.max - scroll.min;
                 var ucx:Float = usableWidth;
@@ -117,9 +119,13 @@ private class HorizontalScrollLayout extends DefaultLayout {
                     thumbWidth = ucx;
                 }
                 if (thumbWidth > 0 && Math.isNaN(thumbWidth) == false) {
-                    thumb.width = thumbWidth;
+                    if (Math.abs(thumb.width - thumbWidth) > 1.0) {
+                        thumb.width = thumbWidth;
+                    }
                 }
-                thumb.show();
+                if (@:privateAccess thumb._hidden == true) {
+                    thumb.show();
+                }
             }
         }
     }

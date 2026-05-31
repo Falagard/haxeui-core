@@ -341,6 +341,7 @@ private class ListDropDownHandler extends DropDownHandler {
     }
 
     public override function prepare(wrapper:Box) {
+        trace("TRACE: prepare: entering ListDropDownHandler.prepare()"); #if sys Sys.stdout().flush(); #end
         var itemCount = 4;
         if (_dropdown.dropdownSize != null) {
             itemCount = _dropdown.dropdownSize;
@@ -353,8 +354,10 @@ private class ListDropDownHandler extends DropDownHandler {
             _listview.itemCount = itemCount;
         }
 
+        trace("TRACE: prepare: syncing listview validation"); #if sys Sys.stdout().flush(); #end
         _listview.syncComponentValidation();
         if (_dropdown.dropdownWidth == null) {
+            trace("TRACE: prepare: syncing wrapper validation"); #if sys Sys.stdout().flush(); #end
             wrapper.syncComponentValidation();
             var offset:Float = 0;
             if (wrapper.layout != null) {

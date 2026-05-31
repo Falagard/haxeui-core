@@ -103,7 +103,9 @@ private class VerticalScrollLayout extends DefaultLayout {
         var thumb:Button =  component.findComponent("scroll-thumb-button");
         if (thumb != null) {
             if (scroll.min == scroll.max) {
-                thumb.hide();
+                if (@:privateAccess thumb._hidden == false) {
+                    thumb.hide();
+                }
             } else {
                 var m:Float = scroll.max - scroll.min;
                 var ucy:Float = usableHeight;
@@ -117,9 +119,13 @@ private class VerticalScrollLayout extends DefaultLayout {
                     thumbHeight = ucy;
                 }
                 if (thumbHeight > 0 && Math.isNaN(thumbHeight) == false) {
-                    thumb.height = thumbHeight;
+                    if (Math.abs(thumb.height - thumbHeight) > 1.0) {
+                        thumb.height = thumbHeight;
+                    }
                 }
-                thumb.show();
+                if (@:privateAccess thumb._hidden == true) {
+                    thumb.show();
+                }
             }
         }
     }
