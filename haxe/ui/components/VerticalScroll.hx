@@ -113,8 +113,12 @@ private class VerticalScrollLayout extends DefaultLayout {
                 if (scroll.thumbSize != null) {
                     thumbHeight = scroll.thumbSize;
                 }
-                if (thumbHeight < innerWidth) {
-                    thumbHeight = innerWidth;
+                var minHeight:Float = innerWidth;
+                if (thumb.style != null && thumb.style.minHeight != null) {
+                    minHeight = Math.max(minHeight, thumb.style.minHeight);
+                }
+                if (thumbHeight < minHeight) {
+                    thumbHeight = minHeight;
                 } else if (thumbHeight > ucy) {
                     thumbHeight = ucy;
                 }
