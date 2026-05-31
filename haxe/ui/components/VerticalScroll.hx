@@ -170,8 +170,6 @@ private class VerticalScrollLayout extends DefaultLayout {
             var x:Float = ((usableWidth - thumb.componentWidth) / 2) + paddingLeft + marginLeft(thumb) - marginRight(thumb);
             x = Math.fround(x);
 
-            trace("TRACE: VerticalScroll: max=" + scroll.max + " min=" + scroll.min + " pos=" + scroll.pos + " y=" + y + " currentTop=" + thumb.top); #if sys Sys.stdout().flush(); #end
-
             if (Math.isNaN(y) == false && Math.isFinite(y)) {
                 thumb.moveComponent(x, y);
             } else {

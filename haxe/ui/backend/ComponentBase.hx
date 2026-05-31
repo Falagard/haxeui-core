@@ -1546,7 +1546,6 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
     public function syncComponentValidation(nextFrame:Bool = true) {
         var count:Int = 0;
         while (isComponentInvalid()) {
-            trace("TRACE: syncComponentValidation loop: count=" + count + " component=" + Type.getClassName(Type.getClass(this)) + "#" + this.id + " flags=" + [for (k in _invalidationFlags.keys()) k].join(",")); #if sys Sys.stdout().flush(); #end
             validateComponent(nextFrame);
 
             for (child in childComponents) {
