@@ -355,6 +355,7 @@ private class ListDropDownHandler extends DropDownHandler {
         }
 
         trace("TRACE: prepare: syncing listview validation"); #if sys Sys.stdout().flush(); #end
+        trace("TRACE: prepare: Call Stack leading to Dropdown Sync:\n" + haxe.CallStack.toString(haxe.CallStack.callStack())); #if sys Sys.stdout().flush(); #end
         _listview.syncComponentValidation();
         if (_dropdown.dropdownWidth == null) {
             trace("TRACE: prepare: syncing wrapper validation"); #if sys Sys.stdout().flush(); #end

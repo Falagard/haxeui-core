@@ -135,16 +135,25 @@ private class VerticalScrollLayout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
-        super.repositionChildren();
-
         var deinc:Button = component.findComponent("scroll-deinc-button");
         var inc:Button = component.findComponent("scroll-inc-button");
-        if (inc != null && hidden(inc) == false) {
-            inc.top = component.height - inc.height - paddingBottom;
+        var thumb:Button = component.findComponent("scroll-thumb-button");
+        var scroll:Scroll = cast(component, Scroll);
+
+        if (deinc != null && hidden(deinc) == false) {
+            var x:Float = ((usableWidth - deinc.componentWidth) / 2) + paddingLeft + marginLeft(deinc) - marginRight(deinc);
+            x = Math.fround(x);
+            var y:Float = paddingTop + marginTop(deinc);
+            deinc.moveComponent(x, y);
         }
 
-        var scroll:Scroll = cast(component, Scroll);
-        var thumb:Button =  component.findComponent("scroll-thumb-button");
+        if (inc != null && hidden(inc) == false) {
+            var x:Float = ((usableWidth - inc.componentWidth) / 2) + paddingLeft + marginLeft(inc) - marginRight(inc);
+            x = Math.fround(x);
+            var y:Float = component.height - inc.height - paddingBottom;
+            inc.moveComponent(x, y);
+        }
+
         if (thumb != null) {
             var m:Float = scroll.max - scroll.min;
             var y:Float = 0;
@@ -157,12 +166,16 @@ private class VerticalScrollLayout extends DefaultLayout {
             if (deinc != null && hidden(deinc) == false) {
                 y += deinc.height + verticalSpacing;
             }
-            thumb.left = Math.fround(thumb.left);
+
+            var x:Float = ((usableWidth - thumb.componentWidth) / 2) + paddingLeft + marginLeft(thumb) - marginRight(thumb);
+            x = Math.fround(x);
+
             trace("TRACE: VerticalScroll: max=" + scroll.max + " min=" + scroll.min + " pos=" + scroll.pos + " y=" + y + " currentTop=" + thumb.top); #if sys Sys.stdout().flush(); #end
+
             if (Math.isNaN(y) == false && Math.isFinite(y)) {
-                if (thumb.top != y) {
-                    thumb.top = y;
-                }
+                thumb.moveComponent(x, y);
+            } else {
+                thumb.moveComponent(x, thumb.top);
             }
         }
     }

@@ -135,16 +135,25 @@ private class HorizontalScrollLayout extends DefaultLayout {
     }
 
     public override function repositionChildren() {
-        super.repositionChildren();
-
         var deinc:Button = component.findComponent("scroll-deinc-button");
         var inc:Button = component.findComponent("scroll-inc-button");
-        if (inc != null && hidden(inc) == false) {
-            inc.left = component.width - inc.width - paddingRight;
+        var thumb:Button = component.findComponent("scroll-thumb-button");
+        var scroll:Scroll = cast(component, Scroll);
+
+        if (deinc != null && hidden(deinc) == false) {
+            var x:Float = paddingLeft + marginLeft(deinc);
+            var y:Float = ((usableHeight - deinc.componentHeight) / 2) + paddingTop + marginTop(deinc) - marginBottom(deinc);
+            y = Math.fround(y);
+            deinc.moveComponent(x, y);
         }
 
-        var scroll:Scroll = cast(component, Scroll);
-        var thumb:Button =  component.findComponent("scroll-thumb-button");
+        if (inc != null && hidden(inc) == false) {
+            var x:Float = component.width - inc.width - paddingRight;
+            var y:Float = ((usableHeight - inc.componentHeight) / 2) + paddingTop + marginTop(inc) - marginBottom(inc);
+            y = Math.fround(y);
+            inc.moveComponent(x, y);
+        }
+
         if (thumb != null) {
             var m:Float = scroll.max - scroll.min;
             var x:Float = 0;
@@ -157,12 +166,15 @@ private class HorizontalScrollLayout extends DefaultLayout {
             if (deinc != null && hidden(deinc) == false) {
                 x += deinc.width + horizontalSpacing;
             }
+
+            var y:Float = ((usableHeight - thumb.componentHeight) / 2) + paddingTop + marginTop(thumb) - marginBottom(thumb);
+            y = Math.fround(y);
+
             if (Math.isNaN(x) == false && Math.isFinite(x)) {
-                if (thumb.left != x) {
-                    thumb.left = x;
-                }
+                thumb.moveComponent(x, y);
+            } else {
+                thumb.moveComponent(thumb.left, y);
             }
-            thumb.top = Math.fround(thumb.top);
         }
     }
 
