@@ -395,10 +395,12 @@ private class ListViewBuilder extends ScrollViewBuilder {
             if (vscroll != null) {
                 var vpos:Float = vscroll.pos;
                 var contents:Component = _listview.findComponent("listview-contents", "css");
-                if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
-                    vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
-                } else if (itemToEnsure.top < vpos) {
-                    vscroll.pos = itemToEnsure.top;
+                if (contents.componentClipRect != null && contents.componentClipRect.height > 0) {
+                    if (itemToEnsure.top + itemToEnsure.height > vpos + contents.componentClipRect.height) {
+                        vscroll.pos = ((itemToEnsure.top + itemToEnsure.height) - contents.componentClipRect.height);
+                    } else if (itemToEnsure.top < vpos) {
+                        vscroll.pos = itemToEnsure.top;
+                    }
                 }
             }
         }
@@ -411,13 +413,15 @@ private class ListViewBuilder extends ScrollViewBuilder {
             var layout = cast(_listview.layout, VerticalVirtualLayout);
             var itemHeight = layout.itemHeight;
             var itemTop = index * itemHeight;
-                var vpos:Float = vscroll.pos;
-                var contents:Component = _listview.findComponent("listview-contents", "css");
+            var vpos:Float = vscroll.pos;
+            var contents:Component = _listview.findComponent("listview-contents", "css");
+            if (contents.componentClipRect != null && contents.componentClipRect.height > 0) {
                 if (itemTop + itemHeight > vpos + contents.componentClipRect.height) {
                     vscroll.pos = ((itemTop + itemHeight) - contents.componentClipRect.height);
                 } else if (itemTop < vpos) {
                     vscroll.pos = itemTop;
                 }
+            }
         }
     }
     
