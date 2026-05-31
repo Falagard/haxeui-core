@@ -166,7 +166,14 @@ class VirtualLayout extends ScrollViewLayout {
             item.data = data;
         }
 
+        var loopCount = 0;
         while (dataSource.size < contents.childComponents.length) {
+            loopCount++;
+            if (loopCount > 1000) {
+                trace("WARNING: Infinite loop detected in refreshNonVirtualData loop!");
+                #if sys Sys.stdout().flush(); #end
+                break;
+            }
             var item:ItemRenderer = cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer);
             removeRenderer(item);    // remove last
         }
@@ -227,7 +234,14 @@ class VirtualLayout extends ScrollViewLayout {
             i++;
         }
 
+        var loopCount = 0;
         while (contents.childComponents.length > i) {
+            loopCount++;
+            if (loopCount > 1000) {
+                trace("WARNING: Infinite loop detected in refreshVirtualData trailing loop!");
+                #if sys Sys.stdout().flush(); #end
+                break;
+            }
             removeRenderer(cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer), false);    // remove last
         }
     }
@@ -308,14 +322,28 @@ class VirtualLayout extends ScrollViewLayout {
     private function removeInvisibleRenderers() {
         var contents:Component = this.contents;
         if (_firstIndex >= 0) {
+            var loopCount = 0;
             while (contents.childComponents.length > 0 && !isRendererVisible(contents.childComponents[0])) {
+                loopCount++;
+                if (loopCount > 1000) {
+                    trace("WARNING: Infinite loop detected in removeInvisibleRenderers (firstIndex)!");
+                    #if sys Sys.stdout().flush(); #end
+                    break;
+                }
                 removeRenderer(cast(contents.childComponents[0], ItemRenderer), false);
                 ++_firstIndex;
             }
         }
 
         if (_lastIndex >= 0) {
+            var loopCount = 0;
             while (contents.childComponents.length > 0 && !isRendererVisible(contents.childComponents[contents.childComponents.length - 1])) {
+                loopCount++;
+                if (loopCount > 1000) {
+                    trace("WARNING: Infinite loop detected in removeInvisibleRenderers (lastIndex)!");
+                    #if sys Sys.stdout().flush(); #end
+                    break;
+                }
                 removeRenderer(cast(contents.childComponents[contents.childComponents.length - 1], ItemRenderer), false);
                 --_lastIndex;
             }
