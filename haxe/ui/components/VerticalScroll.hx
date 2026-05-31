@@ -154,6 +154,7 @@ private class VerticalScrollLayout extends DefaultLayout {
                 y += deinc.height + verticalSpacing;
             }
             thumb.left = Math.fround(thumb.left);
+            trace("TRACE: VerticalScroll: max=" + scroll.max + " min=" + scroll.min + " pos=" + scroll.pos + " y=" + y + " currentTop=" + thumb.top); #if sys Sys.stdout().flush(); #end
             if (Math.isNaN(y) == false && Math.isFinite(y)) {
                 if (thumb.top != y) {
                     thumb.top = y;
