@@ -143,14 +143,21 @@ private class HorizontalScrollLayout extends DefaultLayout {
         var thumb:Button =  component.findComponent("scroll-thumb-button");
         if (thumb != null) {
             var m:Float = scroll.max - scroll.min;
-            var u:Float = usableWidth;
-            u -= thumb.componentWidth;
-            var x:Float = ((scroll.pos - scroll.min) / m) * u;
+            var x:Float = 0;
+            if (m != 0 && Math.isNaN(m) == false) {
+                var u:Float = usableWidth;
+                u -= thumb.componentWidth;
+                x = ((scroll.pos - scroll.min) / m) * u;
+            }
             x += paddingLeft;
             if (deinc != null && hidden(deinc) == false) {
                 x += deinc.width + horizontalSpacing;
             }
-            thumb.left = x;
+            if (Math.isNaN(x) == false && Math.isFinite(x)) {
+                if (thumb.left != x) {
+                    thumb.left = x;
+                }
+            }
             thumb.top = Math.fround(thumb.top);
         }
     }
