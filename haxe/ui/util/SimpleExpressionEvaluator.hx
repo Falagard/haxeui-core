@@ -19,6 +19,12 @@ enum SimpleExpressionEvaluatorOperation {
 }
 
 class SimpleExpressionEvaluator {
+    // Recursion depth guard — prevents stack overflow when large text bodies
+    // containing '-' characters (e.g. CSS class names in HTML templates) are
+    // accidentally passed through the expression evaluator via LocaleManager.
+    private static var _evalDepth:Int = 0;
+    private static final _MAX_EVAL_DEPTH:Int = 32;
+
     public static function evalCondition(condition:String):Bool {
         return eval(condition, {
             Backend: Backend,
@@ -59,6 +65,12 @@ class SimpleExpressionEvaluator {
     }
     
     private static function evalSingle(s:String, context:Dynamic = null):Dynamic {
+        _evalDepth++;
+        if (_evalDepth > _MAX_EVAL_DEPTH) {
+            _evalDepth--;
+            return null;
+        }
+
         var result:Dynamic = null;
 
         var operation:SimpleExpressionEvaluatorOperation = null;
@@ -297,10 +309,11 @@ class SimpleExpressionEvaluator {
                 }
             }
         }
-        
+
+        _evalDepth--;
         return result;
     }
-    
+
     private static inline function isNum(value:String) {
         var v = Std.parseFloat(value);
         return return !Math.isNaN(v) && Math.isFinite(v);
