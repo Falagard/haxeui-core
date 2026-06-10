@@ -210,7 +210,11 @@ class Style {
 
     public function mergeDirectives(map:Map<String, Directive>) {
         if (map == null) return;
-        for (key in map.keys()) {
+        #if hl hl.Gc.enable(false); #end
+        var _dirKeys = map.keys();
+        #if hl hl.Gc.enable(true); #end
+        while (_dirKeys.hasNext()) {
+        var key = _dirKeys.next();
             var v = map.get(key);
             if ((v is DirectiveExtension)) {
                 var ruleElements = Toolkit.styleSheet.findMatchingRules(v.directive, true);
