@@ -37,14 +37,14 @@ class StyleSheet {
 
     public var rules(get, null):Array<RuleElement>;
     private function get_rules():Array<RuleElement> {
+        #if hl hl.Gc.enable(false); #end
         var r = _rules.copy();
-
         for (mq in _mediaQueries) {
             if (mq.relevant) {
                 r = r.concat(mq.styleSheet.rules);
             }
         }
-
+        #if hl hl.Gc.enable(true); #end
         return r;
     }
 

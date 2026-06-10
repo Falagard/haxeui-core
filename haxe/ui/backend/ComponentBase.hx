@@ -1387,6 +1387,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             }
         }
 
+        #if hl hl.Gc.enable(false); #end
         if (flag == InvalidationFlags.ALL) {
             if (_isValidating == true) {
                 _delayedInvalidationFlags.set(InvalidationFlags.ALL, true);
@@ -1400,6 +1401,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
                 _invalidationFlags.set(flag, true);
             }
         }
+        #if hl hl.Gc.enable(true); #end
 
         if (_isValidating == true) {
             //it is already in queue
