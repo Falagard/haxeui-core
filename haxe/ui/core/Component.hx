@@ -1949,13 +1949,22 @@ class Component extends ComponentImpl
 
         var sizeChanged = false;
         if (_componentWidth != _actualWidth || _componentHeight != _actualHeight) {
+            var prevActualWidth = _actualWidth;
+            var prevActualHeight = _actualHeight;
             _actualWidth = _componentWidth;
             _actualHeight = _componentHeight;
-            
+
             enforceSizeConstraints();
 
-            if (parentComponent != null) {
-                parentComponent.invalidateComponentLayout();
+            // Only notify parent if the constrained actual size changed from what we last
+            // reported. Without this guard, max-width/min-width constraints cause an
+            // infinite loop: parent assigns percentWidth→1152px, enforceSizeConstraints
+            // clamps to 600px (resetting _actualWidth to 600), parent sees _componentWidth
+            // (1152) != _actualWidth (600) and re-validates forever.
+            if (_actualWidth != prevActualWidth || _actualHeight != prevActualHeight) {
+                if (parentComponent != null) {
+                    parentComponent.invalidateComponentLayout();
+                }
             }
 
             onResized();

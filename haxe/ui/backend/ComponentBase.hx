@@ -1359,10 +1359,10 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
 
         if (flag == InvalidationFlags.ALL) {
-            for (value in _invalidationFlags) {
-                return true;
-            }
-
+            #if hl hl.Gc.enable(false); #end
+            var it = _invalidationFlags.iterator();
+            #if hl hl.Gc.enable(true); #end
+            if (it.hasNext()) return true;
             return false;
         }
 
@@ -1502,31 +1502,46 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
 
         _isValidating = true;
 
-        validateComponentInternal(nextFrame);
-        validateInitialSize(isInitialized);
+        try {
+            validateComponentInternal(nextFrame);
+            validateInitialSize(isInitialized);
 
-        #if (haxe_ver < 4)
-        _invalidationFlags = new Map<String, Bool>();
-        #else
-        _invalidationFlags.clear();
-        #end
+            #if (haxe_ver < 4)
+            _invalidationFlags = new Map<String, Bool>();
+            #else
+            _invalidationFlags.clear();
+            #end
 
-        _isAllInvalid = false;
+            _isAllInvalid = false;
 
-        for (flag in _delayedInvalidationFlags.keys()) {
-            if (flag == InvalidationFlags.ALL) {
-                _isAllInvalid = true;
-            } else {
-                _invalidationFlags.set(flag, true);
+            #if hl hl.Gc.enable(false); #end
+            var delayedKeys = _delayedInvalidationFlags.keys();
+            #if hl hl.Gc.enable(true); #end
+            for (flag in delayedKeys) {
+                if (flag == InvalidationFlags.ALL) {
+                    _isAllInvalid = true;
+                } else {
+                    _invalidationFlags.set(flag, true);
+                }
             }
-        }
-        #if (haxe_ver < 4)
-        _delayedInvalidationFlags = new Map<String, Bool>();
-        #else
-        _delayedInvalidationFlags.clear();
-        #end
+            #if (haxe_ver < 4)
+            _delayedInvalidationFlags = new Map<String, Bool>();
+            #else
+            _delayedInvalidationFlags.clear();
+            #end
 
-        _isValidating = false;
+            _isValidating = false;
+        } catch (e:Dynamic) {
+            // Haxe has no finally — reset validation state before re-throwing so
+            // _isValidating never stays permanently true (which would silently
+            // prevent this component from ever being validated again).
+            _invalidationFlags.clear();
+            _isAllInvalid = false;
+            _delayedInvalidationFlags.clear();
+            _invalidateCount = 0;
+            _isValidating = false;
+            throw e;
+        }
     }
 
     /**

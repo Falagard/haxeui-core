@@ -132,21 +132,30 @@ class ValidationManager {
         dispatch(new ValidationEvent(ValidationEvent.START));
 
         //check length every time because add() might have added a new item during the last validation
-        while (_queue.length > 0) {
-            var item:IValidating = _queue.shift();
-            if (item.depth < 0) {
-                continue;   //no longer on the display list
+        try {
+            while (_queue.length > 0) {
+                var item:IValidating = _queue.shift();
+                if (item.depth < 0) {
+                    continue;   //no longer on the display list
+                }
+                item.validateComponent();
             }
-            item.validateComponent();
-        }
 
-        for (i in 0..._displayQueue.length) {
-            var item = _displayQueue[i];
-            item.updateComponentDisplay();
-        }
-        _displayQueue.splice(0, _displayQueue.length);
+            for (i in 0..._displayQueue.length) {
+                var item = _displayQueue[i];
+                item.updateComponentDisplay();
+            }
+            _displayQueue.splice(0, _displayQueue.length);
 
-        isValidating = false;
+            isValidating = false;
+        } catch (e:Dynamic) {
+            // #if hl: Haxe has no finally — reset state before re-throwing so
+            // the ValidationManager does not stay permanently locked (isValidating=true)
+            // which would silently freeze all layout/rendering.
+            _displayQueue.splice(0, _displayQueue.length);
+            isValidating = false;
+            throw e;
+        }
         
         if (_queue.length > 0) { // lets process any stragglers - items maybe have been added while processing other parts
             isPending = true;
