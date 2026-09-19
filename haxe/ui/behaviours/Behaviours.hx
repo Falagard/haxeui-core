@@ -25,17 +25,24 @@ class Behaviours {
     }
 
     public function register(id:String, cls:Class<Behaviour>, defaultValue:Variant = null) {
-        var info:BehaviourInfo = {
-            id: id,
-            cls: cls,
-            defaultValue: defaultValue,
-            isSet: false
-        }
+        #if hl hlgcguard.HlGcGuard.disable(); #end
+        try {
+            var info:BehaviourInfo = {
+                id: id,
+                cls: cls,
+                defaultValue: defaultValue,
+                isSet: false
+            }
 
-        _registry.set(id, info);
-        _updateOrder.remove(id);
-        _updateOrder.push(id);
-        _actualUpdateOrder = null;
+            _registry.set(id, info);
+            _updateOrder.remove(id);
+            _updateOrder.push(id);
+            _actualUpdateOrder = null;
+        } catch (e:Dynamic) {
+            #if hl hlgcguard.HlGcGuard.restore(); #end
+            throw e;
+        }
+        #if hl hlgcguard.HlGcGuard.restore(); #end
     }
 
     public function isRegistered(id:String):Bool {

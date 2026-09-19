@@ -86,6 +86,17 @@ class RuleElement {
     }
 
     private function processDirective(d:Directive) {
+        #if hl hlgcguard.HlGcGuard.disable(); #end
+        try {
+            processDirectiveImpl(d);
+        } catch (e:Dynamic) {
+            #if hl hlgcguard.HlGcGuard.restore(); #end
+            throw e;
+        }
+        #if hl hlgcguard.HlGcGuard.restore(); #end
+    }
+
+    private function processDirectiveImpl(d:Directive) {
         switch (d.directive) {
             case "padding":
                 var vl = ValueTools.composite(d.value);
@@ -166,6 +177,17 @@ class RuleElement {
     }
 
     private function processComposite(d:Directive, parts:Array<String>, duplicate:Bool = false) {
+        #if hl hlgcguard.HlGcGuard.disable(); #end
+        try {
+            processCompositeImpl(d, parts, duplicate);
+        } catch (e:Dynamic) {
+            #if hl hlgcguard.HlGcGuard.restore(); #end
+            throw e;
+        }
+        #if hl hlgcguard.HlGcGuard.restore(); #end
+    }
+
+    private function processCompositeImpl(d:Directive, parts:Array<String>, duplicate:Bool = false) {
         for (p in parts) {
             directives.remove(p);
         }
