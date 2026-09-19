@@ -6,9 +6,6 @@
         "aW4KeNiNG"
     ],
     "version": "1.7.0",
-    "dependencies": {
-        "hl-gc-guard": ""
-    },
     "releasenote": "1.7.0 release",
     "tags": [
         "ui",
