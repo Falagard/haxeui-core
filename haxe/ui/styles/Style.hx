@@ -210,9 +210,9 @@ class Style {
 
     public function mergeDirectives(map:Map<String, Directive>) {
         if (map == null) return;
-        #if hl hl.Gc.enable(false); #end
+        #if hl hlgcguard.HlGcGuard.disable(); #end
         var _dirKeys = map.keys();
-        #if hl hl.Gc.enable(true); #end
+        #if hl hlgcguard.HlGcGuard.restore(); #end
         while (_dirKeys.hasNext()) {
         var key = _dirKeys.next();
             var v = map.get(key);

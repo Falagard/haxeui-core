@@ -1359,9 +1359,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
         }
 
         if (flag == InvalidationFlags.ALL) {
-            #if hl hl.Gc.enable(false); #end
+            #if hl hlgcguard.HlGcGuard.disable(); #end
             var it = _invalidationFlags.iterator();
-            #if hl hl.Gc.enable(true); #end
+            #if hl hlgcguard.HlGcGuard.restore(); #end
             if (it.hasNext()) return true;
             return false;
         }
@@ -1387,7 +1387,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
             }
         }
 
-        #if hl hl.Gc.enable(false); #end
+        #if hl hlgcguard.HlGcGuard.disable(); #end
         if (flag == InvalidationFlags.ALL) {
             if (_isValidating == true) {
                 _delayedInvalidationFlags.set(InvalidationFlags.ALL, true);
@@ -1401,7 +1401,7 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
                 _invalidationFlags.set(flag, true);
             }
         }
-        #if hl hl.Gc.enable(true); #end
+        #if hl hlgcguard.HlGcGuard.restore(); #end
 
         if (_isValidating == true) {
             //it is already in queue
@@ -1514,9 +1514,9 @@ class ComponentBase extends ComponentSurface implements IClonable<ComponentBase>
 
             _isAllInvalid = false;
 
-            #if hl hl.Gc.enable(false); #end
+            #if hl hlgcguard.HlGcGuard.disable(); #end
             var delayedKeys = _delayedInvalidationFlags.keys();
-            #if hl hl.Gc.enable(true); #end
+            #if hl hlgcguard.HlGcGuard.restore(); #end
             for (flag in delayedKeys) {
                 if (flag == InvalidationFlags.ALL) {
                     _isAllInvalid = true;

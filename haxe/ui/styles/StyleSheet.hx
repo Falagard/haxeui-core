@@ -37,14 +37,20 @@ class StyleSheet {
 
     public var rules(get, null):Array<RuleElement>;
     private function get_rules():Array<RuleElement> {
-        #if hl hl.Gc.enable(false); #end
-        var r = _rules.copy();
-        for (mq in _mediaQueries) {
-            if (mq.relevant) {
-                r = r.concat(mq.styleSheet.rules);
+        #if hl hlgcguard.HlGcGuard.disable(); #end
+        var r:Array<RuleElement> = null;
+        try {
+            r = _rules.copy();
+            for (mq in _mediaQueries) {
+                if (mq.relevant) {
+                    r = r.concat(mq.styleSheet.rules);
+                }
             }
+        } catch (e:Dynamic) {
+            #if hl hlgcguard.HlGcGuard.restore(); #end
+            throw e;
         }
-        #if hl hl.Gc.enable(true); #end
+        #if hl hlgcguard.HlGcGuard.restore(); #end
         return r;
     }
 
