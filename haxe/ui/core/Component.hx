@@ -57,10 +57,17 @@ class Component extends ComponentImpl
 
         var c:Class<Dynamic> = Type.getClass(this);
         while (c != null) {
+            // GC-guarded: the HL GC firing mid-String.split()/addClass()
+            // here corrupts the heap (SIGSEGV in String.split, called from
+            // this constructor). Same crash class as StyleSheet.get_rules()
+            // and ComponentBase.invalidateComponent() above/elsewhere in this
+            // fork — this constructor loop was simply never covered before.
+            #if hl hlgcguard.HlGcGuard.disable(); #end
             var css = Type.getClassName(c);
             var className:String = Std.string(css).split(".").pop();
             addClass(className.toLowerCase(), false);
             addClass(StringUtil.toDashes(className), false);
+            #if hl hlgcguard.HlGcGuard.restore(); #end
             if (className.toLowerCase() == "component") {
                 break;
             }
